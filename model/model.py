@@ -3,9 +3,25 @@ import torchvision.transforms as transforms
 
 from model.malaria_classifier import MalariaClassifier
 
+__all__ = ['predict']
+def _download_model():
+  import kagglehub
+  from pathlib import Path
+  p= kagglehub.model_download(
+                              handle='sudarshan1927/malaria-classifier/PyTorch/malaria-classifier/1',
+                              force_download=True
+                            )
+  return Path(p) / 'malaria_classifier_epoch_50.pth'
+
+# downloading the model
+model_path = _download_model()
+
+# initialising the model
 model = MalariaClassifier()
 
-model.load_state_dict(torch.load('./model/malaria_classifier_epoch_50.pth',
+
+# loading the model
+model.load_state_dict(torch.load(model_path,
                                  weights_only=False,
                                  map_location='cpu'))
 
@@ -27,7 +43,7 @@ def predict(image):
   with torch.no_grad():
     output = model(image)
     predicted_class = (output > 0.5).int().item()
-  
+
   if predicted_class == 0:
     output = 1 - output
   return class_names[predicted_class], output.item()

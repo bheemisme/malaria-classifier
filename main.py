@@ -6,14 +6,15 @@ from PIL import Image
 from model import model
 
 def uploader():
-    uploaded_file = st.file_uploader(label='Upload the image', 
-                     type=['png', 'jpg', 'jpeg'],
-                     accept_multiple_files=False,
-                     key='image-uploader')
+    uploaded_file = st.file_uploader(
+                    label='Upload the image', 
+                    type=['png', 'jpg', 'jpeg'],
+                    accept_multiple_files=False,
+                    key='image-uploader'
+                )
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
-
         classname, prob =model.predict(image)
         st.markdown(f'#### Class: {classname}')
         st.markdown(f'#### Probability: {prob}')
@@ -30,8 +31,6 @@ def app():
     
     with col2:
         st.pyplot(fig)
-
-    
 
     uploader()
 
